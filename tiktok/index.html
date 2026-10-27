@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<title>ClipBot conectado</title>
+<link rel="stylesheet" href="../estilo.css">
+</head>
+<body>
+<main>
+  <h1 id="titulo">Clip<span>Bot</span></h1>
+  <p id="msg" class="suave">Lendo a resposta do TikTok...</p>
+  <div class="cartao" id="url" hidden></div>
+  <button id="copiar" hidden>Copiar endereço</button>
+</main>
+<script>
+  // Esta página não envia nada a lugar nenhum: só mostra o endereço para colar no terminal do ClipBot.
+  const p = new URLSearchParams(location.search);
+  const msg = document.getElementById("msg");
+  if (p.get("code")) {
+    msg.textContent = "Autorizado. Copie o endereço abaixo e cole no terminal do ClipBot.";
+    const caixa = document.getElementById("url");
+    caixa.textContent = location.href;
+    caixa.hidden = false;
+    const botao = document.getElementById("copiar");
+    botao.hidden = false;
+    botao.onclick = async () => {
+      try { await navigator.clipboard.writeText(location.href); botao.textContent = "Copiado"; }
+      catch { botao.textContent = "Selecione e copie à mão"; }
+    };
+  } else if (p.get("error")) {
+    msg.textContent = "O TikTok não autorizou: " + (p.get("error_description") || p.get("error"));
+  } else {
+    msg.textContent = "Esta página recebe o retorno do login do TikTok para o ClipBot.";
+  }
+</script>
+</body>
+</html>
